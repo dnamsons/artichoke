@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["chrono",""]],"trait":[["MakeTime",""],["TimeType","Common API for `Time` backends."]]});
+initSidebarItems({"mod":[["chrono",""]],"trait":[["MakeTime","Common API for `Time` constructors."],["TimeType","Common API for `Time` backends."]]});

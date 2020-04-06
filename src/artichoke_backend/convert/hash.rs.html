@@ -132,8 +132,6 @@
 <span id="132">132</span>
 <span id="133">133</span>
 <span id="134">134</span>
-<span id="135">135</span>
-<span id="136">136</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">TryFrom</span>;
@@ -146,8 +144,8 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">value</span>::<span class="ident">Value</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Artichoke</span>, <span class="ident">ConvertMut</span>, <span class="ident">TryConvert</span>};
 
-<span class="comment">// TODO: implement `PartialEq`, `Eq`, and `Hash` on `Value`, see GH-159.</span>
-<span class="comment">// TODO: implement `Convert&lt;HashMap&lt;Value, Value&gt;&gt;`, see GH-160.</span>
+<span class="comment">// TODO(GH-28): implement `PartialEq`, `Eq`, and `Hash` on `Value`.</span>
+<span class="comment">// TODO(GH-29): implement `Convert&lt;HashMap&lt;Value, Value&gt;&gt;`.</span>
 
 <span class="kw">impl</span> <span class="ident">ConvertMut</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Value</span>, <span class="ident">Value</span>)<span class="op">&gt;</span>, <span class="ident">Value</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Artichoke</span> {
     <span class="kw">fn</span> <span class="ident">convert_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">value</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Value</span>, <span class="ident">Value</span>)<span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Value</span> {
@@ -239,36 +237,34 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
+    <span class="kw">use</span> <span class="ident">quickcheck_macros</span>::<span class="ident">quickcheck</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 
     <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">test</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">roundtrip_kv</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
-
-        <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
-            (<span class="ident">interp</span>.<span class="ident">convert</span>(<span class="number">1</span>), <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="number">2</span>)),
-            (<span class="ident">interp</span>.<span class="ident">convert</span>(<span class="number">7</span>), <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="number">8</span>)),
-        ];
-
-        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">ConvertMut</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">Value</span><span class="op">&gt;</span>::<span class="ident">convert_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>, <span class="ident">map</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">value</span>.<span class="ident">to_s</span>(), <span class="string">b&quot;{1=&gt;2, 7=&gt;8}&quot;</span>);
-
-        <span class="kw">let</span> <span class="ident">pairs</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">try_into</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Value</span>, <span class="ident">Value</span>)<span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">expect</span>(<span class="string">&quot;convert&quot;</span>);
-        <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">pairs</span>
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">key</span>, <span class="ident">value</span>)<span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">try_into</span>::<span class="op">&lt;</span><span class="ident">Int</span><span class="op">&gt;</span>().<span class="ident">expect</span>(<span class="string">&quot;convert&quot;</span>);
-                <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">try_into</span>::<span class="op">&lt;</span><span class="ident">Int</span><span class="op">&gt;</span>().<span class="ident">expect</span>(<span class="string">&quot;convert&quot;</span>);
-                (<span class="ident">key</span>, <span class="ident">value</span>)
-            })
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">expected</span> <span class="op">=</span> <span class="ident">HashMap</span>::<span class="ident">new</span>();
-        <span class="ident">expected</span>.<span class="ident">insert</span>(<span class="number">1</span>, <span class="number">2</span>);
-        <span class="ident">expected</span>.<span class="ident">insert</span>(<span class="number">7</span>, <span class="number">8</span>);
-
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="ident">expected</span>);
+    <span class="attribute">#[<span class="ident">quickcheck</span>]</span>
+    <span class="kw">fn</span> <span class="ident">roundtrip_kv</span>(<span class="ident">hash</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert_mut</span>(<span class="ident">hash</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">value</span>
+            .<span class="ident">funcall</span>::<span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>, <span class="string">&quot;length&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>)
+            .<span class="ident">unwrap</span>();
+        <span class="kw">if</span> <span class="ident">len</span> <span class="op">!</span><span class="op">=</span> <span class="ident">hash</span>.<span class="ident">len</span>() {
+            <span class="kw">return</span> <span class="bool-val">false</span>;
+        }
+        <span class="kw">let</span> <span class="ident">recovered</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">try_into</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Value</span>, <span class="ident">Value</span>)<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>).<span class="ident">unwrap</span>();
+        <span class="kw">if</span> <span class="ident">recovered</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">hash</span>.<span class="ident">len</span>() {
+            <span class="kw">return</span> <span class="bool-val">false</span>;
+        }
+        <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">val</span>) <span class="kw">in</span> <span class="ident">recovered</span> {
+            <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">try_into</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>).<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="ident">val</span>.<span class="ident">try_into</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>).<span class="ident">unwrap</span>();
+            <span class="kw">match</span> <span class="ident">hash</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>) {
+                <span class="prelude-val">Some</span>(<span class="ident">retrieved</span>) <span class="kw">if</span> <span class="ident">retrieved</span> <span class="op">=</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">val</span> <span class="op">=</span><span class="op">&gt;</span> {}
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>,
+            }
+        }
+        <span class="bool-val">true</span>
     }
 }
 </pre></div>

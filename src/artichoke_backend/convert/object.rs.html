@@ -250,6 +250,10 @@
 <span id="250">250</span>
 <span id="251">251</span>
 <span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cell</span>::<span class="ident">RefCell</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">c_void</span>;
@@ -349,10 +353,9 @@
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
         <span class="comment">// Make sure we have a Data otherwise extraction will fail.</span>
         <span class="kw">if</span> <span class="ident">slf</span>.<span class="ident">ruby_type</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">Ruby</span>::<span class="ident">Data</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Exception</span>::<span class="ident">from</span>(<span class="ident">TypeError</span>::<span class="ident">new</span>(
-                <span class="ident">interp</span>,
-                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;uninitialized {}&quot;</span>, <span class="self">Self</span>::<span class="ident">ruby_type_name</span>()),
-            )));
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">message</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;uninitialized &quot;</span>);
+            <span class="ident">message</span>.<span class="ident">push_str</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>());
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Exception</span>::<span class="ident">from</span>(<span class="ident">TypeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="ident">message</span>)));
         }
         <span class="kw">let</span> <span class="ident">borrow</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow</span>();
         <span class="kw">let</span> <span class="ident">mrb</span> <span class="op">=</span> <span class="ident">borrow</span>.<span class="ident">mrb</span>;
@@ -367,19 +370,18 @@
             <span class="ident">sys</span>::<span class="ident">mrb_sys_class_of_value</span>(<span class="ident">mrb</span>, <span class="ident">slf</span>.<span class="ident">inner</span>()),
             <span class="ident">rclass</span>.<span class="ident">as_mut</span>(),
         ) {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Exception</span>::<span class="ident">from</span>(<span class="ident">TypeError</span>::<span class="ident">new</span>(
-                <span class="ident">interp</span>,
-                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Could not extract {} from receiver&quot;</span>, <span class="self">Self</span>::<span class="ident">ruby_type_name</span>()),
-            )));
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">message</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;Could not extract &quot;</span>);
+            <span class="ident">message</span>.<span class="ident">push_str</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>());
+            <span class="ident">message</span>.<span class="ident">push_str</span>(<span class="string">&quot; from receiver&quot;</span>);
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Exception</span>::<span class="ident">from</span>(<span class="ident">TypeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="ident">message</span>)));
         }
         <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">sys</span>::<span class="ident">mrb_data_check_get_ptr</span>(<span class="ident">mrb</span>, <span class="ident">slf</span>.<span class="ident">inner</span>(), <span class="ident">spec</span>.<span class="ident">data_type</span>());
         <span class="kw">if</span> <span class="ident">ptr</span>.<span class="ident">is_null</span>() {
             <span class="comment">// `Object#allocate` can be used to create `MRB_TT_DATA` without calling</span>
             <span class="comment">// `#initialize`. These objects will return a NULL pointer.</span>
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Exception</span>::<span class="ident">from</span>(<span class="ident">TypeError</span>::<span class="ident">new</span>(
-                <span class="ident">interp</span>,
-                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;uninitialized {}&quot;</span>, <span class="self">Self</span>::<span class="ident">ruby_type_name</span>()),
-            )));
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">message</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;uninitialized &quot;</span>);
+            <span class="ident">message</span>.<span class="ident">push_str</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>());
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Exception</span>::<span class="ident">from</span>(<span class="ident">TypeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="ident">message</span>)));
         }
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">from_raw</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">RefCell</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>);
         <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>);
@@ -408,20 +410,18 @@
         <span class="ident">inner</span>: <span class="ident">String</span>,
     }
 
-    <span class="kw">impl</span> <span class="ident">Container</span> {
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">value</span>(
-            <span class="ident">mrb</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">sys</span>::<span class="ident">mrb_state</span>,
-            <span class="ident">slf</span>: <span class="ident">sys</span>::<span class="ident">mrb_value</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">sys</span>::<span class="ident">mrb_value</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="macro">unwrap_interpreter</span><span class="macro">!</span>(<span class="ident">mrb</span>);
+    <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">container_value</span>(
+        <span class="ident">mrb</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">sys</span>::<span class="ident">mrb_state</span>,
+        <span class="ident">slf</span>: <span class="ident">sys</span>::<span class="ident">mrb_value</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">sys</span>::<span class="ident">mrb_value</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="macro">unwrap_interpreter</span><span class="macro">!</span>(<span class="ident">mrb</span>);
 
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">Value</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="ident">slf</span>);
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">container</span>) <span class="op">=</span> <span class="self">Self</span>::<span class="ident">try_from_ruby</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>) {
-                <span class="kw">let</span> <span class="ident">borrow</span> <span class="op">=</span> <span class="ident">container</span>.<span class="ident">borrow</span>();
-                <span class="ident">interp</span>.<span class="ident">convert_mut</span>(<span class="ident">borrow</span>.<span class="ident">inner</span>.<span class="ident">as_bytes</span>()).<span class="ident">inner</span>()
-            } <span class="kw">else</span> {
-                <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="prelude-val">None</span>::<span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>).<span class="ident">inner</span>()
-            }
+        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">Value</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="ident">slf</span>);
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">container</span>) <span class="op">=</span> <span class="ident">Container</span>::<span class="ident">try_from_ruby</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>) {
+            <span class="kw">let</span> <span class="ident">borrow</span> <span class="op">=</span> <span class="ident">container</span>.<span class="ident">borrow</span>();
+            <span class="ident">interp</span>.<span class="ident">convert_mut</span>(<span class="ident">borrow</span>.<span class="ident">inner</span>.<span class="ident">as_bytes</span>()).<span class="ident">inner</span>()
+        } <span class="kw">else</span> {
+            <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="prelude-val">None</span>::<span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>).<span class="ident">inner</span>()
         }
     }
 
@@ -445,12 +445,12 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">convert_obj_roundtrip</span>() {
-        <span class="kw">let</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span>
             <span class="ident">class</span>::<span class="ident">Spec</span>::<span class="ident">new</span>(<span class="string">&quot;Container&quot;</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">def</span>::<span class="ident">rust_data_free</span>::<span class="op">&lt;</span><span class="ident">Container</span><span class="op">&gt;</span>)).<span class="ident">unwrap</span>();
         <span class="ident">class</span>::<span class="ident">Builder</span>::<span class="ident">for_spec</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">spec</span>)
             .<span class="ident">value_is_rust_object</span>()
-            .<span class="ident">add_method</span>(<span class="string">&quot;value&quot;</span>, <span class="ident">Container</span>::<span class="ident">value</span>, <span class="ident">sys</span>::<span class="ident">mrb_args_none</span>())
+            .<span class="ident">add_method</span>(<span class="string">&quot;value&quot;</span>, <span class="ident">container_value</span>, <span class="ident">sys</span>::<span class="ident">mrb_args_none</span>())
             .<span class="ident">unwrap</span>()
             .<span class="ident">define</span>()
             .<span class="ident">unwrap</span>();
@@ -459,25 +459,29 @@
             <span class="ident">inner</span>: <span class="string">&quot;contained string contents&quot;</span>.<span class="ident">to_owned</span>(),
         };
 
-        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">try_into_ruby</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="prelude-val">None</span>).<span class="ident">expect</span>(<span class="string">&quot;convert&quot;</span>);
-        <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">funcall</span>::<span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>(<span class="string">&quot;class&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>).<span class="ident">expect</span>(<span class="string">&quot;funcall&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">class</span>.<span class="ident">to_s</span>(), <span class="string">b&quot;Container&quot;</span>);
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Container</span>::<span class="ident">try_from_ruby</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>) }.<span class="ident">expect</span>(<span class="string">&quot;convert&quot;</span>);
+        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">try_into_ruby</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="prelude-val">None</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">value</span>
+            .<span class="ident">funcall</span>::<span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>, <span class="string">&quot;class&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>)
+            .<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">class</span>.<span class="ident">to_s</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>), <span class="string">b&quot;Container&quot;</span>);
+        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Container</span>::<span class="ident">try_from_ruby</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>) }.<span class="ident">unwrap</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Rc</span>::<span class="ident">strong_count</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>), <span class="number">2</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">borrow</span>().<span class="ident">inner</span>, <span class="string">&quot;contained string contents&quot;</span>);
         <span class="ident">drop</span>(<span class="ident">data</span>);
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">funcall</span>::<span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>(<span class="string">&quot;value&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>).<span class="ident">expect</span>(<span class="string">&quot;funcall&quot;</span>);
+        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">value</span>
+            .<span class="ident">funcall</span>::<span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>, <span class="string">&quot;value&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>)
+            .<span class="ident">unwrap</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">inner</span>, <span class="string">&quot;contained string contents&quot;</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">convert_obj_not_data</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span>
             <span class="ident">class</span>::<span class="ident">Spec</span>::<span class="ident">new</span>(<span class="string">&quot;Container&quot;</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">def</span>::<span class="ident">rust_data_free</span>::<span class="op">&lt;</span><span class="ident">Container</span><span class="op">&gt;</span>)).<span class="ident">unwrap</span>();
         <span class="ident">class</span>::<span class="ident">Builder</span>::<span class="ident">for_spec</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">spec</span>)
             .<span class="ident">value_is_rust_object</span>()
-            .<span class="ident">add_method</span>(<span class="string">&quot;value&quot;</span>, <span class="ident">Container</span>::<span class="ident">value</span>, <span class="ident">sys</span>::<span class="ident">mrb_args_none</span>())
+            .<span class="ident">add_method</span>(<span class="string">&quot;value&quot;</span>, <span class="ident">container_value</span>, <span class="ident">sys</span>::<span class="ident">mrb_args_none</span>())
             .<span class="ident">unwrap</span>()
             .<span class="ident">define</span>()
             .<span class="ident">unwrap</span>();
@@ -490,15 +494,19 @@
         <span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow_mut</span>().<span class="ident">def_class</span>::<span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Other</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">spec</span>);
 
         <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert_mut</span>(<span class="string">&quot;string&quot;</span>);
-        <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">funcall</span>::<span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>(<span class="string">&quot;class&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>).<span class="ident">expect</span>(<span class="string">&quot;funcall&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">class</span>.<span class="ident">to_s</span>(), <span class="string">b&quot;String&quot;</span>);
+        <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">value</span>
+            .<span class="ident">funcall</span>::<span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>, <span class="string">&quot;class&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>)
+            .<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">class</span>.<span class="ident">to_s</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>), <span class="string">b&quot;String&quot;</span>);
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Container</span>::<span class="ident">try_from_ruby</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>) };
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">data</span>.<span class="ident">is_err</span>());
         <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">Other</span>::<span class="ident">default</span>())
             .<span class="ident">try_into_ruby</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="prelude-val">None</span>)
-            .<span class="ident">expect</span>(<span class="string">&quot;convert&quot;</span>);
-        <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">funcall</span>::<span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>(<span class="string">&quot;class&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>).<span class="ident">expect</span>(<span class="string">&quot;funcall&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">class</span>.<span class="ident">to_s</span>(), <span class="string">b&quot;Other&quot;</span>);
+            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">value</span>
+            .<span class="ident">funcall</span>::<span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>, <span class="string">&quot;class&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>)
+            .<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">class</span>.<span class="ident">to_s</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>), <span class="string">b&quot;Other&quot;</span>);
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Container</span>::<span class="ident">try_from_ruby</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>) };
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">data</span>.<span class="ident">is_err</span>());
     }

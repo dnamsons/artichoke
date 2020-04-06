@@ -330,12 +330,6 @@
 <span id="330">330</span>
 <span id="331">331</span>
 <span id="332">332</span>
-<span id="333">333</span>
-<span id="334">334</span>
-<span id="335">335</span>
-<span id="336">336</span>
-<span id="337">337</span>
-<span id="338">338</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">borrow</span>::<span class="ident">Cow</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashSet</span>;
@@ -352,7 +346,7 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">value</span>::<span class="ident">Value</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">Artichoke</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Artichoke</span>,
     <span class="ident">spec</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Spec</span>,
@@ -533,14 +527,14 @@
     }
 
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fqname</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Cow</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fqname</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">str</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">scope</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">enclosing_scope</span>() {
-            <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}::{}&quot;</span>, <span class="ident">scope</span>.<span class="ident">fqname</span>(), <span class="self">self</span>.<span class="ident">name</span>()))
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fqname</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="ident">scope</span>.<span class="ident">fqname</span>());
+            <span class="ident">fqname</span>.<span class="ident">push_str</span>(<span class="string">&quot;::&quot;</span>);
+            <span class="ident">fqname</span>.<span class="ident">push_str</span>(<span class="self">self</span>.<span class="ident">name</span>.<span class="ident">as_ref</span>());
+            <span class="ident">fqname</span>.<span class="ident">into</span>()
         } <span class="kw">else</span> {
-            <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">name</span> {
-                <span class="ident">Cow</span>::<span class="ident">Borrowed</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Cow</span>::<span class="ident">Borrowed</span>(<span class="ident">name</span>),
-                <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Cow</span>::<span class="ident">Borrowed</span>(<span class="ident">name</span>.<span class="ident">as_str</span>()),
-            }
+            <span class="self">self</span>.<span class="ident">name</span>.<span class="ident">as_ref</span>().<span class="ident">into</span>()
         }
     }
 
@@ -577,7 +571,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">Spec</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;artichoke class spec -- {}&quot;</span>, <span class="self">self</span>.<span class="ident">fqname</span>())
     }
 }
@@ -593,7 +587,7 @@
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Spec</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">name</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">name</span>
+        <span class="self">self</span>.<span class="ident">fqname</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">fqname</span>()
     }
 }
 
@@ -607,7 +601,7 @@
     <span class="kw">fn</span> <span class="ident">super_class</span>() {
         <span class="kw">struct</span> <span class="ident">RustError</span>;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">borrow</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow</span>();
         <span class="kw">let</span> <span class="ident">standard_error</span> <span class="op">=</span> <span class="ident">borrow</span>.<span class="ident">class_spec</span>::<span class="op">&lt;</span><span class="ident">StandardError</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">class</span>::<span class="ident">Spec</span>::<span class="ident">new</span>(<span class="string">&quot;RustError&quot;</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>).<span class="ident">unwrap</span>();
@@ -618,26 +612,24 @@
         <span class="ident">drop</span>(<span class="ident">borrow</span>);
         <span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow_mut</span>().<span class="ident">def_class</span>::<span class="op">&lt;</span><span class="ident">RustError</span><span class="op">&gt;</span>(<span class="ident">spec</span>);
 
-        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>
-            .<span class="ident">eval</span>(<span class="string">b&quot;RustError.new.is_a?(StandardError)&quot;</span>)
-            .<span class="ident">expect</span>(<span class="string">&quot;eval&quot;</span>);
-        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">try_into</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>().<span class="ident">expect</span>(<span class="string">&quot;convert&quot;</span>);
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;RustError.new.is_a?(StandardError)&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">try_into</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>).<span class="ident">unwrap</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">result</span>, <span class="string">&quot;RustError instances are instance of StandardError&quot;</span>);
-        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;RustError &lt; StandardError&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;eval&quot;</span>);
-        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">try_into</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>().<span class="ident">expect</span>(<span class="string">&quot;convert&quot;</span>);
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;RustError &lt; StandardError&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">try_into</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>).<span class="ident">unwrap</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">result</span>, <span class="string">&quot;RustError inherits from StandardError&quot;</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">rclass_for_undef_root_class</span>() {
-        <span class="kw">let</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">class</span>::<span class="ident">Spec</span>::<span class="ident">new</span>(<span class="string">&quot;Foo&quot;</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>).<span class="ident">unwrap</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">spec</span>.<span class="ident">rclass</span>(<span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow</span>().<span class="ident">mrb</span>).<span class="ident">is_none</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">rclass_for_undef_nested_class</span>() {
-        <span class="kw">let</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">borrow</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow</span>();
         <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="ident">borrow</span>.<span class="ident">module_spec</span>::<span class="op">&lt;</span><span class="ident">Kernel</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">class</span>::<span class="ident">Spec</span>::<span class="ident">new</span>(<span class="string">&quot;Foo&quot;</span>, <span class="prelude-val">Some</span>(<span class="ident">EnclosingRubyScope</span>::<span class="ident">module</span>(<span class="ident">scope</span>)), <span class="prelude-val">None</span>).<span class="ident">unwrap</span>();
@@ -647,7 +639,7 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">rclass_for_root_class</span>() {
-        <span class="kw">let</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">borrow</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow</span>();
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">borrow</span>.<span class="ident">class_spec</span>::<span class="op">&lt;</span><span class="ident">StandardError</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">spec</span>.<span class="ident">rclass</span>(<span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow</span>().<span class="ident">mrb</span>).<span class="ident">is_some</span>());
@@ -655,10 +647,8 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">rclass_for_nested_class</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
-        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">interp</span>
-            .<span class="ident">eval</span>(<span class="string">b&quot;module Foo; class Bar; end; end&quot;</span>)
-            .<span class="ident">expect</span>(<span class="string">&quot;eval&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;module Foo; class Bar; end; end&quot;</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">module</span>::<span class="ident">Spec</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>, <span class="string">&quot;Foo&quot;</span>, <span class="prelude-val">None</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">class</span>::<span class="ident">Spec</span>::<span class="ident">new</span>(<span class="string">&quot;Bar&quot;</span>, <span class="prelude-val">Some</span>(<span class="ident">EnclosingRubyScope</span>::<span class="ident">module</span>(<span class="kw-2">&amp;</span><span class="ident">spec</span>)), <span class="prelude-val">None</span>).<span class="ident">unwrap</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">spec</span>.<span class="ident">rclass</span>(<span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow</span>().<span class="ident">mrb</span>).<span class="ident">is_some</span>());
@@ -666,10 +656,8 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">rclass_for_nested_class_under_class</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
-        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">interp</span>
-            .<span class="ident">eval</span>(<span class="string">b&quot;class Foo; class Bar; end; end&quot;</span>)
-            .<span class="ident">expect</span>(<span class="string">&quot;eval&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;class Foo; class Bar; end; end&quot;</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">class</span>::<span class="ident">Spec</span>::<span class="ident">new</span>(<span class="string">&quot;Foo&quot;</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">class</span>::<span class="ident">Spec</span>::<span class="ident">new</span>(<span class="string">&quot;Bar&quot;</span>, <span class="prelude-val">Some</span>(<span class="ident">EnclosingRubyScope</span>::<span class="ident">class</span>(<span class="kw-2">&amp;</span><span class="ident">spec</span>)), <span class="prelude-val">None</span>).<span class="ident">unwrap</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">spec</span>.<span class="ident">rclass</span>(<span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow</span>().<span class="ident">mrb</span>).<span class="ident">is_some</span>());

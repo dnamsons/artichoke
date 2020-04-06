@@ -405,12 +405,12 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">arena_restore_on_explicit_restore</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">baseline_object_count</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">live_object_count</span>();
         <span class="kw">let</span> <span class="ident">arena</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">create_arena_savepoint</span>();
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2000</span> {
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;&#39;a&#39;&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;value&quot;</span>);
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_s</span>();
+            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;&#39;a&#39;&quot;</span>).<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_s</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>);
         }
         <span class="ident">arena</span>.<span class="ident">restore</span>();
         <span class="ident">interp</span>.<span class="ident">full_gc</span>();
@@ -425,13 +425,13 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">arena_restore_on_drop</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">baseline_object_count</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">live_object_count</span>();
         {
             <span class="kw">let</span> <span class="ident">_arena</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">create_arena_savepoint</span>();
             <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2000</span> {
-                <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;&#39;a&#39;&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;value&quot;</span>);
-                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_s</span>();
+                <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;&#39;a&#39;&quot;</span>).<span class="ident">unwrap</span>();
+                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_s</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>);
             }
         }
         <span class="ident">interp</span>.<span class="ident">full_gc</span>();
@@ -446,15 +446,15 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">arena_clone</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">baseline_object_count</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">live_object_count</span>();
         <span class="kw">let</span> <span class="ident">arena</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">create_arena_savepoint</span>();
         <span class="kw">let</span> <span class="ident">arena_clone</span> <span class="op">=</span> <span class="ident">arena</span>.<span class="ident">clone</span>();
         <span class="comment">// restore original before any objects have been allocated</span>
         <span class="ident">arena</span>.<span class="ident">restore</span>();
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2000</span> {
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;&#39;a&#39;&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;value&quot;</span>);
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_s</span>();
+            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;&#39;a&#39;&quot;</span>).<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_s</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>);
         }
         <span class="ident">arena_clone</span>.<span class="ident">restore</span>();
         <span class="ident">interp</span>.<span class="ident">full_gc</span>();
@@ -468,7 +468,7 @@
     }
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">enable_disable_gc</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="ident">interp</span>.<span class="ident">disable_gc</span>();
         <span class="kw">let</span> <span class="ident">arena</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">create_arena_savepoint</span>();
         <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">interp</span>
@@ -488,7 +488,7 @@
                 []
                 &quot;#</span>,
             )
-            .<span class="ident">expect</span>(<span class="string">&quot;eval&quot;</span>);
+            .<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">live</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">live_object_count</span>();
         <span class="ident">interp</span>.<span class="ident">full_gc</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(
@@ -508,10 +508,10 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">gc_after_empty_eval</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">arena</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">create_arena_savepoint</span>();
         <span class="kw">let</span> <span class="ident">baseline_object_count</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">live_object_count</span>();
-        <span class="ident">drop</span>(<span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;eval&quot;</span>));
+        <span class="ident">drop</span>(<span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;&quot;</span>).<span class="ident">unwrap</span>());
         <span class="ident">arena</span>.<span class="ident">restore</span>();
         <span class="ident">interp</span>.<span class="ident">full_gc</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">interp</span>.<span class="ident">live_object_count</span>(), <span class="ident">baseline_object_count</span>);
@@ -519,14 +519,14 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">gc_functional_test</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">expect</span>(<span class="string">&quot;init&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">interpreter</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">baseline_object_count</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">live_object_count</span>();
         <span class="kw">let</span> <span class="ident">initial_arena</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">create_arena_savepoint</span>();
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2000</span> {
             <span class="kw">let</span> <span class="ident">arena</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">create_arena_savepoint</span>();
             <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">eval</span>(<span class="string">b&quot;&#39;gc test&#39;&quot;</span>);
             <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">unwrap</span>();
-            <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">value</span>.<span class="ident">is_dead</span>());
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">value</span>.<span class="ident">is_dead</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">interp</span>));
             <span class="ident">arena</span>.<span class="ident">restore</span>();
             <span class="ident">interp</span>.<span class="ident">incremental_gc</span>();
         }

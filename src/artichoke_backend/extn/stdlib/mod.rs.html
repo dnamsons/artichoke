@@ -27,35 +27,45 @@
 <span id="27">27</span>
 <span id="28">28</span>
 <span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">extn</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">abbrev</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">cmath</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">delegate</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">forwardable</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">json</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">monitor</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ostruct</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;stdlib-securerandom&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">securerandom</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">set</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">shellwords</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">strscan</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">time</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">uri</span>;
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">init</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Artichoke</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">InitializeResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="ident">abbrev</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
+    <span class="ident">cmath</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
     <span class="ident">delegate</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
     <span class="ident">forwardable</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
     <span class="ident">json</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
     <span class="ident">monitor</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
     <span class="ident">ostruct</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;stdlib-securerandom&quot;</span>)]</span>
+    <span class="ident">securerandom</span>::<span class="ident">mruby</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
     <span class="ident">set</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
+    <span class="ident">shellwords</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
     <span class="ident">strscan</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
+    <span class="ident">time</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
     <span class="ident">uri</span>::<span class="ident">init</span>(<span class="ident">interp</span>)<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(())
-}
-
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">uri</span> {
-    <span class="doccomment">//! Ruby URI package, implemented with embedded sources from MRI 2.6.3.</span>
-    <span class="comment">// See scripts/auto_import/.</span>
-    <span class="macro">include</span><span class="macro">!</span>(<span class="macro">concat</span><span class="macro">!</span>(<span class="macro">env</span><span class="macro">!</span>(<span class="string">&quot;OUT_DIR&quot;</span>), <span class="string">&quot;/src/generated/uri.rs&quot;</span>));
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../../";window.currentCrate = "artichoke_backend";</script><script src="../../../../aliases.js"></script><script src="../../../../main.js"></script><script src="../../../../source-script.js"></script><script src="../../../../source-files.js"></script><script defer src="../../../../search-index.js"></script></body></html>

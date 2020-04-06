@@ -184,26 +184,13 @@
 <span id="184">184</span>
 <span id="185">185</span>
 <span id="186">186</span>
-<span id="187">187</span>
-<span id="188">188</span>
-<span id="189">189</span>
-<span id="190">190</span>
-<span id="191">191</span>
-<span id="192">192</span>
-<span id="193">193</span>
-<span id="194">194</span>
-<span id="195">195</span>
-<span id="196">196</span>
-<span id="197">197</span>
-<span id="198">198</span>
-<span id="199">199</span>
-<span id="200">200</span>
-<span id="201">201</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
+<span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
+<span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">missing_errors_doc</span>)]</span>
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">intra_doc_link_resolution_failure</span>)]</span>
+<span class="attribute">#![<span class="ident">warn</span>(<span class="ident">intra_doc_link_resolution_failure</span>)]</span>
+<span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_debug_implementations</span>)]</span>
+<span class="attribute">#![<span class="ident">warn</span>(<span class="ident">rust_2018_idioms</span>)]</span>
 
 <span class="doccomment">//! # artichoke-backend</span>
 <span class="doccomment">//!</span>
@@ -226,7 +213,7 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let mut interp = artichoke_backend::interpreter().unwrap();</span>
 <span class="doccomment">//! let result = interp.eval(b&quot;10 * 10&quot;).unwrap();</span>
-<span class="doccomment">//! let result = result.try_into::&lt;i64&gt;().unwrap();</span>
+<span class="doccomment">//! let result = result.try_into::&lt;i64&gt;(&amp;interp).unwrap();</span>
 <span class="doccomment">//! assert_eq!(result, 100);</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
@@ -241,7 +228,7 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let mut interp = artichoke_backend::interpreter().unwrap();</span>
 <span class="doccomment">//! let result = interp.eval(b&quot;&#39;ruby funcall&#39;&quot;).unwrap();</span>
-<span class="doccomment">//! let result = result.funcall::&lt;usize&gt;(&quot;length&quot;, &amp;[], None).unwrap();</span>
+<span class="doccomment">//! let result = result.funcall::&lt;usize&gt;(&amp;mut interp, &quot;length&quot;, &amp;[], None).unwrap();</span>
 <span class="doccomment">//! assert_eq!(result, 12);</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
@@ -275,28 +262,9 @@
 <span class="doccomment">//! The [`convert` module](convert) provides implementations for conversions</span>
 <span class="doccomment">//! between boxed Ruby values and native Rust types like `i64` and</span>
 <span class="doccomment">//! `HashMap&lt;String, Option&lt;Vec&lt;u8&gt;&gt;&gt;` using an `artichoke-backend` interpreter.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## License</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! artichoke-backend is licensed with the MIT License (c) Ryan Lopopolo.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Some portions of artichoke-backend are derived from</span>
-<span class="doccomment">//! [mruby](https://github.com/mruby/mruby) which is Copyright (c) 2019 mruby</span>
-<span class="doccomment">//! developers. mruby is licensed with the</span>
-<span class="doccomment">//! [MIT License](https://github.com/mruby/mruby/blob/master/LICENSE).</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Some portions of artichoke-backend are derived from Ruby @</span>
-<span class="doccomment">//! [2.6.3](https://github.com/ruby/ruby/tree/v2_6_3) which is copyright Yukihiro</span>
-<span class="doccomment">//! Matsumoto \&lt;matz@netlab.jp\&gt;. Ruby is licensed with the</span>
-<span class="doccomment">//! [2-clause BSDL License](https://github.com/ruby/ruby/blob/v2_6_3/COPYING).</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! artichoke-backend vendors headers provided by</span>
-<span class="doccomment">//! [emsdk](https://github.com/emscripten-core/emsdk) which is Copyright (c) 2018</span>
-<span class="doccomment">//! Emscripten authors. emsdk is licensed with the</span>
-<span class="doccomment">//! [MIT/Expat License](https://github.com/emscripten-core/emsdk/blob/master/LICENSE).</span>
 
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">downcast</span>;
+<span class="attribute">#![<span class="ident">doc</span>(<span class="ident">html_root_url</span> <span class="op">=</span> <span class="string">&quot;https://artichoke.github.io/artichoke/artichoke_backend&quot;</span>)]</span>
+
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">log</span>;
 
@@ -318,6 +286,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ffi</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fs</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">gc</span>;
+<span class="kw">mod</span> <span class="ident">globals</span>;
 <span class="kw">mod</span> <span class="ident">intern</span>;
 <span class="kw">mod</span> <span class="ident">interpreter</span>;
 <span class="kw">mod</span> <span class="ident">io</span>;
@@ -345,6 +314,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">artichoke_core</span>::<span class="ident">convert</span>::<span class="ident">TryConvertMut</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">artichoke_core</span>::<span class="ident">eval</span>::<span class="ident">Eval</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">artichoke_core</span>::<span class="ident">file</span>::<span class="ident">File</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">artichoke_core</span>::<span class="ident">globals</span>::<span class="ident">Globals</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">artichoke_core</span>::<span class="ident">intern</span>::<span class="ident">Intern</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">artichoke_core</span>::<span class="ident">load</span>::<span class="ident">LoadSources</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">artichoke_core</span>::<span class="ident">parser</span>::<span class="ident">Parser</span>;

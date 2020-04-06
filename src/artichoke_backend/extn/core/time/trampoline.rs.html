@@ -77,33 +77,13 @@
 <span id="77">77</span>
 <span id="78">78</span>
 <span id="79">79</span>
-<span id="80">80</span>
-<span id="81">81</span>
-<span id="82">82</span>
-<span id="83">83</span>
-<span id="84">84</span>
-<span id="85">85</span>
-<span id="86">86</span>
-<span id="87">87</span>
-<span id="88">88</span>
-<span id="89">89</span>
-<span id="90">90</span>
-<span id="91">91</span>
-<span id="92">92</span>
-<span id="93">93</span>
-<span id="94">94</span>
-<span id="95">95</span>
-<span id="96">96</span>
-<span id="97">97</span>
-<span id="98">98</span>
-<span id="99">99</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">extn</span>::<span class="ident">core</span>::<span class="ident">time</span>::<span class="ident">backend</span>::<span class="ident">MakeTime</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">extn</span>::<span class="ident">core</span>::<span class="ident">time</span>::{<span class="self">self</span>, <span class="ident">Time</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">extn</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">now</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Time</span>(<span class="ident">time</span>::<span class="ident">factory</span>().<span class="ident">now</span>(<span class="ident">interp</span>));
+    <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Time</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">time</span>::<span class="ident">factory</span>().<span class="ident">now</span>(<span class="ident">interp</span>)));
     <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">now</span>.<span class="ident">try_into_ruby</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
 }
@@ -111,90 +91,70 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">day</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>, <span class="ident">time</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Time</span>::<span class="ident">try_from_ruby</span>(<span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">time</span>) }<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">day</span> <span class="op">=</span> <span class="ident">time</span>.<span class="ident">borrow</span>().<span class="ident">inner</span>().<span class="ident">day</span>();
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>
-        .<span class="ident">try_convert</span>(<span class="ident">day</span>)
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">RuntimeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="string">&quot;Time day component too large&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="ident">day</span>);
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hour</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>, <span class="ident">time</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Time</span>::<span class="ident">try_from_ruby</span>(<span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">time</span>) }<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">hour</span> <span class="op">=</span> <span class="ident">time</span>.<span class="ident">borrow</span>().<span class="ident">inner</span>().<span class="ident">hour</span>();
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>
-        .<span class="ident">try_convert</span>(<span class="ident">hour</span>)
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">RuntimeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="string">&quot;Time hour component too large&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="ident">hour</span>);
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">minute</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>, <span class="ident">time</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Time</span>::<span class="ident">try_from_ruby</span>(<span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">time</span>) }<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">minute</span> <span class="op">=</span> <span class="ident">time</span>.<span class="ident">borrow</span>().<span class="ident">inner</span>().<span class="ident">minute</span>();
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>
-        .<span class="ident">try_convert</span>(<span class="ident">minute</span>)
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">RuntimeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="string">&quot;Time minute component too large&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="ident">minute</span>);
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">month</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>, <span class="ident">time</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Time</span>::<span class="ident">try_from_ruby</span>(<span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">time</span>) }<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">month</span> <span class="op">=</span> <span class="ident">time</span>.<span class="ident">borrow</span>().<span class="ident">inner</span>().<span class="ident">month</span>();
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>
-        .<span class="ident">try_convert</span>(<span class="ident">month</span>)
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">RuntimeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="string">&quot;Time month component too large&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="ident">month</span>);
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nanosecond</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>, <span class="ident">time</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Time</span>::<span class="ident">try_from_ruby</span>(<span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">time</span>) }<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">nanosecond</span> <span class="op">=</span> <span class="ident">time</span>.<span class="ident">borrow</span>().<span class="ident">inner</span>().<span class="ident">nanosecond</span>();
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>
-        .<span class="ident">try_convert</span>(<span class="ident">nanosecond</span>)
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">RuntimeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="string">&quot;Time nanosecond component too large&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="ident">nanosecond</span>);
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">second</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>, <span class="ident">time</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Time</span>::<span class="ident">try_from_ruby</span>(<span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">time</span>) }<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">second</span> <span class="op">=</span> <span class="ident">time</span>.<span class="ident">borrow</span>().<span class="ident">inner</span>().<span class="ident">second</span>();
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>
-        .<span class="ident">try_convert</span>(<span class="ident">second</span>)
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">RuntimeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="string">&quot;Time second component too large&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="ident">second</span>);
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">microsecond</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>, <span class="ident">time</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Time</span>::<span class="ident">try_from_ruby</span>(<span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">time</span>) }<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">microsecond</span> <span class="op">=</span> <span class="ident">time</span>.<span class="ident">borrow</span>().<span class="ident">inner</span>().<span class="ident">microsecond</span>();
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>
-        .<span class="ident">try_convert</span>(<span class="ident">microsecond</span>)
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">RuntimeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="string">&quot;Time microsecond component too large&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="ident">microsecond</span>);
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">weekday</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>, <span class="ident">time</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Time</span>::<span class="ident">try_from_ruby</span>(<span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">time</span>) }<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">weekday</span> <span class="op">=</span> <span class="ident">time</span>.<span class="ident">borrow</span>().<span class="ident">inner</span>().<span class="ident">weekday</span>();
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>
-        .<span class="ident">try_convert</span>(<span class="ident">weekday</span>)
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">RuntimeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="string">&quot;Time weekday component too large&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="ident">weekday</span>);
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">year_day</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>, <span class="ident">time</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Time</span>::<span class="ident">try_from_ruby</span>(<span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">time</span>) }<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">year_day</span> <span class="op">=</span> <span class="ident">time</span>.<span class="ident">borrow</span>().<span class="ident">inner</span>().<span class="ident">year_day</span>();
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>
-        .<span class="ident">try_convert</span>(<span class="ident">year_day</span>)
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">RuntimeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="string">&quot;Time year_day component too large&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="ident">year_day</span>);
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">year</span>(<span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>, <span class="ident">time</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Time</span>::<span class="ident">try_from_ruby</span>(<span class="ident">interp</span>, <span class="kw-2">&amp;</span><span class="ident">time</span>) }<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">year</span> <span class="op">=</span> <span class="ident">time</span>.<span class="ident">borrow</span>().<span class="ident">inner</span>().<span class="ident">year</span>();
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>
-        .<span class="ident">try_convert</span>(<span class="ident">year</span>)
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">RuntimeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="string">&quot;Time year component too large&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert</span>(<span class="ident">year</span>);
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
 }
 </pre></div>

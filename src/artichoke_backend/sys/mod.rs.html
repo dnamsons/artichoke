@@ -107,7 +107,7 @@
 <span id="107">107</span>
 <span id="108">108</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>, <span class="ident">warnings</span>, <span class="ident">intra_doc_link_resolution_failure</span>)]</span>
+<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>, <span class="ident">intra_doc_link_resolution_failure</span>)]</span>
 
 <span class="doccomment">//! Rust bindings for mruby, customized for Artichoke.</span>
 <span class="doccomment">//!</span>
@@ -119,6 +119,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Write</span>;
 
 <span class="kw">mod</span> <span class="ident">args</span>;
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_debug_implementations</span>)]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_upper_case_globals</span>)]</span>
@@ -131,7 +132,6 @@
 }
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">protect</span>;
 
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;ffi_tests.rs&quot;</span>]</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">ffi_tests</span>;
 

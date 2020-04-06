@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["method",""]]});
+initSidebarItems({"fn":[["method",""]],"struct":[["IntegerString",""],["Radix",""]]});

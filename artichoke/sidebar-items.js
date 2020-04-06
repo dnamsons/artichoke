@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["main",""]]});
+initSidebarItems({"fn":[["interpreter","Create and initialize an [`Artichoke`] interpreter."]],"mod":[["backtrace","Format Ruby `Exception` backtraces."],["parser","Detect if Ruby code parses successfully."],["repl","A REPL (read–eval–print–loop) for an Artichoke interpreter."],["ruby","Artichoke CLI entrypoint."]]});

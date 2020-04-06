@@ -303,7 +303,7 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">value</span>::<span class="ident">Value</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Artichoke</span>, <span class="ident">Intern</span>};
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Artichoke</span>,
     <span class="ident">spec</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Spec</span>,
@@ -450,14 +450,14 @@
     }
 
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fqname</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Cow</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fqname</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">str</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">scope</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">enclosing_scope</span>() {
-            <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}::{}&quot;</span>, <span class="ident">scope</span>.<span class="ident">fqname</span>(), <span class="self">self</span>.<span class="ident">name</span>()))
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fqname</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="ident">scope</span>.<span class="ident">fqname</span>());
+            <span class="ident">fqname</span>.<span class="ident">push_str</span>(<span class="string">&quot;::&quot;</span>);
+            <span class="ident">fqname</span>.<span class="ident">push_str</span>(<span class="self">self</span>.<span class="ident">name</span>.<span class="ident">as_ref</span>());
+            <span class="ident">fqname</span>.<span class="ident">into</span>()
         } <span class="kw">else</span> {
-            <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">name</span> {
-                <span class="ident">Cow</span>::<span class="ident">Borrowed</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Cow</span>::<span class="ident">Borrowed</span>(<span class="ident">name</span>),
-                <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Cow</span>::<span class="ident">Borrowed</span>(<span class="ident">name</span>.<span class="ident">as_str</span>()),
-            }
+            <span class="self">self</span>.<span class="ident">name</span>.<span class="ident">as_ref</span>().<span class="ident">into</span>()
         }
     }
 
@@ -507,7 +507,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">Spec</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;artichoke module spec -- {}&quot;</span>, <span class="self">self</span>.<span class="ident">fqname</span>())
     }
 }
@@ -523,7 +523,7 @@
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Spec</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">name</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">name</span>
+        <span class="self">self</span>.<span class="ident">fqname</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">fqname</span>()
     }
 }
 

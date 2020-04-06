@@ -48,20 +48,26 @@
 <span id="48">48</span>
 <span id="49">49</span>
 <span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">rngs</span>::<span class="ident">SmallRng</span>;
-
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">extn</span>::<span class="ident">core</span>::<span class="ident">random</span>::<span class="ident">backend</span>::<span class="ident">rand</span>::<span class="ident">Rand</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">extn</span>::<span class="ident">core</span>::<span class="ident">random</span>::<span class="ident">backend</span>::<span class="ident">RandType</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">extn</span>::<span class="ident">core</span>::<span class="ident">random</span>::<span class="ident">backend</span>::<span class="ident">rand</span>::{<span class="ident">Rand</span>, <span class="ident">Rng</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">extn</span>::<span class="ident">core</span>::<span class="ident">random</span>::<span class="ident">backend</span>::<span class="ident">InternalState</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">Float</span>, <span class="ident">Int</span>};
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Prng</span> {
-    <span class="ident">random</span>: <span class="ident">Rand</span><span class="op">&lt;</span><span class="ident">SmallRng</span><span class="op">&gt;</span>,
+    <span class="ident">random</span>: <span class="ident">Rand</span><span class="op">&lt;</span><span class="ident">Rng</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Prng</span> {
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">seed</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span> {
             <span class="ident">random</span>: <span class="ident">Rand</span>::<span class="ident">new</span>(<span class="ident">seed</span>),
@@ -69,32 +75,40 @@
     }
 
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
         <span class="self">self</span>.<span class="ident">random</span>.<span class="ident">seed</span>()
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">reseed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">new_seed</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>) {
         <span class="self">self</span>.<span class="ident">random</span> <span class="op">=</span> <span class="ident">Rand</span>::<span class="ident">new</span>(<span class="ident">new_seed</span>);
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_same_internal_state</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">RandType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">random</span>.<span class="ident">has_same_internal_state</span>(<span class="ident">other</span>)
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">internal_state</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">InternalState</span> {
+        <span class="self">self</span>.<span class="ident">random</span>.<span class="ident">internal_state</span>()
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bytes</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) {
         <span class="self">self</span>.<span class="ident">random</span>.<span class="ident">bytes</span>(<span class="ident">buf</span>);
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rand_int</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">max</span>: <span class="ident">Int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Int</span> {
         <span class="self">self</span>.<span class="ident">random</span>.<span class="ident">rand_int</span>(<span class="ident">max</span>)
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rand_float</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">max</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Float</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Float</span> {
         <span class="self">self</span>.<span class="ident">random</span>.<span class="ident">rand_float</span>(<span class="ident">max</span>)
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Prng</span> {
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span>::<span class="ident">new</span>(<span class="prelude-val">None</span>)
     }
