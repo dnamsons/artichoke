@@ -179,6 +179,16 @@
 <span id="179">179</span>
 <span id="180">180</span>
 <span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
@@ -199,6 +209,16 @@
     <span class="ident">Collected</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>),
     <span class="ident">Patterns</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>),
     <span class="ident">Haystack</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">ConvertMut</span><span class="op">&lt;</span><span class="ident">Scan</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Artichoke</span> {
+    <span class="kw">fn</span> <span class="ident">convert_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">from</span>: <span class="ident">Scan</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="ident">from</span> {
+            <span class="ident">Scan</span>::<span class="ident">Collected</span>(<span class="ident">collected</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">convert_mut</span>(<span class="ident">collected</span>)),
+            <span class="ident">Scan</span>::<span class="ident">Patterns</span>(<span class="ident">patterns</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">convert_mut</span>(<span class="ident">patterns</span>)),
+            <span class="ident">Scan</span>::<span class="ident">Haystack</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        }
+    }
 }
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">RegexpType</span> {
@@ -362,4 +382,4 @@
 
 <span class="kw">impl</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw">dyn</span> <span class="ident">RegexpType</span> {}
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../../../../";window.currentCrate = "artichoke_backend";</script><script src="../../../../../../aliases.js"></script><script src="../../../../../../main.js"></script><script src="../../../../../../source-script.js"></script><script src="../../../../../../source-files.js"></script><script defer src="../../../../../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../../../../";window.currentCrate = "artichoke_backend";</script><script src="../../../../../../main.js"></script><script src="../../../../../../source-script.js"></script><script src="../../../../../../source-files.js"></script><script defer src="../../../../../../search-index.js"></script></body></html>
