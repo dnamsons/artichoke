@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `artichoke-backend/src/state/parser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parser.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../artichoke_backend/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `artichoke-backend/src/state/parser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parser.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../artichoke_backend/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -245,7 +245,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">State</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="ident">f</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;parser::State&quot;</span>)
             .<span class="ident">field</span>(<span class="string">&quot;context&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;non-null mrb_context&quot;</span>)
             .<span class="ident">field</span>(<span class="string">&quot;stack&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">stack</span>)
@@ -254,7 +254,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">State</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">mrb</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">sys</span>::<span class="ident">mrb_state</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">mrb</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">sys</span>::<span class="ident">mrb_state</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">context</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">mrbc_context_new</span>(<span class="ident">mrb</span>) };
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">context</span> <span class="op">=</span> <span class="ident">NonNull</span>::<span class="ident">new</span>(<span class="ident">context</span>)<span class="question-mark">?</span>;
         <span class="ident">reset_context_filename</span>(<span class="ident">mrb</span>, <span class="kw">unsafe</span> { <span class="ident">context</span>.<span class="ident">as_mut</span>() });
@@ -271,7 +271,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function creates an uninitialized parser state. Calling methods on</span>
     <span class="doccomment">/// it is unlikely to be correct.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">uninit</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">uninit</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span> {
             <span class="ident">context</span>: <span class="ident">NonNull</span>::<span class="ident">dangling</span>(),
             <span class="ident">stack</span>: <span class="macro">vec</span><span class="macro">!</span>[],
@@ -284,7 +284,7 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">context_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">sys</span>::<span class="ident">mrbc_context</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">context_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">sys</span>::<span class="ident">mrbc_context</span> {
         <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">as_mut</span>() }
     }
 
@@ -299,7 +299,7 @@
 
     <span class="doccomment">/// Fetch the current line number from the parser state.</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fetch_lineno</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fetch_lineno</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
         <span class="ident">usize</span>::<span class="ident">from</span>(<span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">as_ref</span>() }.<span class="ident">lineno</span>)
     }
 
@@ -309,11 +309,11 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function returns [`IncrementLinenoError`] if the increment results</span>
     <span class="doccomment">/// in an overflow of the internal parser line number counter.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_fetch_lineno</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">val</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">IncrementLinenoError</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_fetch_lineno</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">val</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">IncrementLinenoError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">old</span> <span class="op">=</span> <span class="ident">usize</span>::<span class="ident">from</span>(<span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">as_ref</span>() }.<span class="ident">lineno</span>);
         <span class="kw">let</span> <span class="ident">new</span> <span class="op">=</span> <span class="ident">old</span>
             .<span class="ident">checked_add</span>(<span class="ident">val</span>)
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">IncrementLinenoError</span>::<span class="ident">Overflow</span>(<span class="ident">usize</span>::<span class="ident">from</span>(<span class="ident">u16</span>::<span class="ident">max_value</span>())))<span class="question-mark">?</span>;
+            .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="ident">IncrementLinenoError</span>::<span class="ident">Overflow</span>(<span class="ident">usize</span>::<span class="ident">from</span>(<span class="ident">u16</span>::<span class="ident">max_value</span>())))<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">store</span> <span class="op">=</span> <span class="ident">u16</span>::<span class="ident">try_from</span>(<span class="ident">new</span>)
             .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">IncrementLinenoError</span>::<span class="ident">Overflow</span>(<span class="ident">usize</span>::<span class="ident">from</span>(<span class="ident">u16</span>::<span class="ident">max_value</span>())))<span class="question-mark">?</span>;
         <span class="kw">unsafe</span> {
@@ -340,7 +340,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Calls to this function modify the parser state so subsequently `eval`ed</span>
     <span class="doccomment">/// code will use the current active [`Context`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pop_context</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">mrb</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">sys</span>::<span class="ident">mrb_state</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pop_context</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">mrb</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">sys</span>::<span class="ident">mrb_state</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">context</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">stack</span>.<span class="ident">pop</span>();
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">current</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">stack</span>.<span class="ident">last</span>() {
             <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="ident">current</span>.<span class="ident">filename_as_c_str</span>();
@@ -355,7 +355,7 @@
 
     <span class="doccomment">/// Returns the last [`Context`], or `None` if the context stack is empty.</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">peek_context</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Context</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">peek_context</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Context</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">stack</span>.<span class="ident">last</span>()
     }
 }
@@ -383,9 +383,9 @@
 
 <span class="kw">impl</span> <span class="ident">Context</span> {
     <span class="doccomment">/// Create a new [`Context`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">filename</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">filename</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>
     <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, [<span class="ident">u8</span>]<span class="op">&gt;</span><span class="op">&gt;</span>,
+        <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, [<span class="ident">u8</span>]<span class="op">&gt;&gt;</span>,
     {
         <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="ident">filename</span>.<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">cstring</span> <span class="op">=</span> <span class="ident">CString</span>::<span class="ident">new</span>(<span class="ident">filename</span>.<span class="ident">as_ref</span>()).<span class="ident">ok</span>()<span class="question-mark">?</span>;
@@ -401,9 +401,9 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// `filename` must not contain any NUL bytes. `filename` must not contain a</span>
     <span class="doccomment">/// trailing `NUL`.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_unchecked</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">filename</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_unchecked</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">filename</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="self">Self</span>
     <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, [<span class="ident">u8</span>]<span class="op">&gt;</span><span class="op">&gt;</span>,
+        <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, [<span class="ident">u8</span>]<span class="op">&gt;&gt;</span>,
     {
         <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="ident">filename</span>.<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">cstring</span> <span class="op">=</span> <span class="ident">CString</span>::<span class="ident">from_vec_unchecked</span>(<span class="ident">filename</span>.<span class="ident">clone</span>().<span class="ident">into_owned</span>());
@@ -417,13 +417,13 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// The root context sets the `__FILE__` magic constant to &quot;(eval)&quot;.</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">root</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">root</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span>::<span class="ident">default</span>()
     }
 
     <span class="doccomment">/// Filename of this `Context`.</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">filename</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">filename</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
         <span class="self">self</span>.<span class="ident">filename</span>.<span class="ident">as_ref</span>()
     }
 
@@ -431,13 +431,13 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This [`CStr`] is valid as long as this `Context` is not dropped.</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">filename_as_c_str</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">CStr</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">filename_as_c_str</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">CStr</span> {
         <span class="self">self</span>.<span class="ident">filename_cstring</span>.<span class="ident">as_c_str</span>()
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Context</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="comment">// Safety:</span>
         <span class="comment">//</span>
         <span class="comment">// - The `TOP_FILENAME` constant is controlled by this module.</span>
@@ -451,7 +451,7 @@
 <span class="kw">mod</span> <span class="ident">context_test</span> {
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">top_filename_does_not_contain_nul_byte</span>() {
-        <span class="kw">let</span> <span class="ident">contains_nul_byte</span> <span class="op">=</span> <span class="kw">super</span>::<span class="ident">TOP_FILENAME</span>.<span class="ident">iter</span>().<span class="ident">copied</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span> <span class="op">=</span><span class="op">=</span> <span class="string">b&#39;\0&#39;</span>);
+        <span class="kw">let</span> <span class="ident">contains_nul_byte</span> <span class="op">=</span> <span class="kw">super</span>::<span class="ident">TOP_FILENAME</span>.<span class="ident">iter</span>().<span class="ident">copied</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span> <span class="op">==</span> <span class="string">b&#39;\0&#39;</span>);
         <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">contains_nul_byte</span>);
     }
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `artichoke-backend/src/types.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>types.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../artichoke_backend/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `artichoke-backend/src/types.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>types.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../artichoke_backend/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -338,7 +338,7 @@
 <span class="doccomment">/// that force an interaction with the VM to return an error.</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_upper_case_globals</span>)]</span>
 <span class="attribute">#[<span class="ident">must_use</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ruby_from_mrb_value</span>(<span class="ident">value</span>: <span class="ident">sys</span>::<span class="ident">mrb_value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Ruby</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ruby_from_mrb_value</span>(<span class="ident">value</span>: <span class="ident">sys</span>::<span class="ident">mrb_value</span>) <span class="op">-&gt;</span> <span class="ident">Ruby</span> {
     <span class="kw">use</span> <span class="ident">sys</span>::<span class="ident">mrb_vtype</span>::<span class="kw-2">*</span>;
 
     <span class="comment">// Suppress lint to enumerate match arms in the same order they are defined</span>
@@ -348,26 +348,26 @@
         <span class="comment">// `nil` is implemented with the `MRB_TT_FALSE` type tag in mruby</span>
         <span class="comment">// (since both values are falsy). The difference is that booleans are</span>
         <span class="comment">// non-zero `Fixnum`s.</span>
-        <span class="ident">MRB_TT_FALSE</span> <span class="kw">if</span> <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">mrb_sys_value_is_nil</span>(<span class="ident">value</span>) } <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Nil</span>,
-        <span class="ident">MRB_TT_FALSE</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Bool</span>,
+        <span class="ident">MRB_TT_FALSE</span> <span class="kw">if</span> <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">mrb_sys_value_is_nil</span>(<span class="ident">value</span>) } <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Nil</span>,
+        <span class="ident">MRB_TT_FALSE</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Bool</span>,
         <span class="comment">// `MRB_TT_FREE` is a marker type tag that indicates to the mruby</span>
         <span class="comment">// VM that an object is unreachable and should be deallocated by the</span>
         <span class="comment">// garbage collector.</span>
-        <span class="ident">MRB_TT_FREE</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
-        <span class="ident">MRB_TT_TRUE</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Bool</span>,
-        <span class="ident">MRB_TT_FIXNUM</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Fixnum</span>,
-        <span class="ident">MRB_TT_SYMBOL</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Symbol</span>,
+        <span class="ident">MRB_TT_FREE</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
+        <span class="ident">MRB_TT_TRUE</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Bool</span>,
+        <span class="ident">MRB_TT_FIXNUM</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Fixnum</span>,
+        <span class="ident">MRB_TT_SYMBOL</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Symbol</span>,
         <span class="comment">// internal use: #undef; should not happen</span>
-        <span class="ident">MRB_TT_UNDEF</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
-        <span class="ident">MRB_TT_FLOAT</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Float</span>,
+        <span class="ident">MRB_TT_UNDEF</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
+        <span class="ident">MRB_TT_FLOAT</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Float</span>,
         <span class="comment">// `MRB_TT_CPTR` wraps a borrowed `void *` pointer.</span>
-        <span class="ident">MRB_TT_CPTR</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">CPointer</span>,
-        <span class="ident">MRB_TT_OBJECT</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Object</span>,
-        <span class="ident">MRB_TT_CLASS</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Class</span>,
-        <span class="ident">MRB_TT_MODULE</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Module</span>,
+        <span class="ident">MRB_TT_CPTR</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">CPointer</span>,
+        <span class="ident">MRB_TT_OBJECT</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Object</span>,
+        <span class="ident">MRB_TT_CLASS</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Class</span>,
+        <span class="ident">MRB_TT_MODULE</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Module</span>,
         <span class="comment">// `MRB_TT_ICLASS` is an internal use type tag meant for holding</span>
         <span class="comment">// mixed in modules.</span>
-        <span class="ident">MRB_TT_ICLASS</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
+        <span class="ident">MRB_TT_ICLASS</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
         <span class="comment">// `MRB_TT_SCLASS` represents a singleton class, or a class that is</span>
         <span class="comment">// defined anonymously, e.g. `c1` or `c2` below:</span>
         <span class="comment">//</span>
@@ -386,48 +386,48 @@
         <span class="comment">// obj = Foo.new</span>
         <span class="comment">// def obj.bar; &#39;bar&#39;; end</span>
         <span class="comment">// ```</span>
-        <span class="ident">MRB_TT_SCLASS</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">SingletonClass</span>,
-        <span class="ident">MRB_TT_PROC</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Proc</span>,
+        <span class="ident">MRB_TT_SCLASS</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">SingletonClass</span>,
+        <span class="ident">MRB_TT_PROC</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Proc</span>,
         <span class="comment">// `MRB_TT_ARRAY` refers to the mruby `mrb_array` implementation.</span>
         <span class="comment">// Artichoke implements its own `Array` as a `Ruby::Data`, so this</span>
         <span class="comment">// variant is unreachable.</span>
-        <span class="ident">MRB_TT_ARRAY</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
-        <span class="ident">MRB_TT_HASH</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Hash</span>,
-        <span class="ident">MRB_TT_STRING</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">String</span>,
-        <span class="ident">MRB_TT_RANGE</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Range</span>,
-        <span class="ident">MRB_TT_EXCEPTION</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Exception</span>,
+        <span class="ident">MRB_TT_ARRAY</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
+        <span class="ident">MRB_TT_HASH</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Hash</span>,
+        <span class="ident">MRB_TT_STRING</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">String</span>,
+        <span class="ident">MRB_TT_RANGE</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Range</span>,
+        <span class="ident">MRB_TT_EXCEPTION</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Exception</span>,
         <span class="comment">// This is a special value type for the `mruby-io` implementation of</span>
         <span class="comment">// the `File` class. Artichoke does not bundle `mruby-io`, so this</span>
         <span class="comment">// variant is unreachable.</span>
-        <span class="ident">MRB_TT_FILE</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
+        <span class="ident">MRB_TT_FILE</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
         <span class="comment">// ENV is currently implemented as a singleton object in Ruby.</span>
         <span class="comment">// NOTE(lopopolo): This might be an internal closure symbol table,</span>
         <span class="comment">// rather than the `ENV` core object.</span>
-        <span class="ident">MRB_TT_ENV</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
+        <span class="ident">MRB_TT_ENV</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
         <span class="comment">// `MRB_TT_DATA` is a type tag for wrapped C pointers. It is used</span>
         <span class="comment">// to indicate that an `mrb_value` has an owned pointer to an</span>
         <span class="comment">// external data structure stored in its `value.p` field.</span>
-        <span class="ident">MRB_TT_DATA</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Data</span>,
+        <span class="ident">MRB_TT_DATA</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Data</span>,
         <span class="comment">// NOTE(lopopolo): `Fiber`s are unimplemented in Artichoke.</span>
-        <span class="ident">MRB_TT_FIBER</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Fiber</span>,
+        <span class="ident">MRB_TT_FIBER</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Fiber</span>,
         <span class="comment">// MRB_TT_ISTRUCT is an &quot;inline structure&quot;, or a mrb_value that</span>
         <span class="comment">// stores data in a char* buffer inside an mrb_value. These</span>
         <span class="comment">// mrb_values cannot have a finalizer and cannot have instance</span>
         <span class="comment">// variables.</span>
         <span class="comment">//</span>
         <span class="comment">// See vendor/mruby-*/include/mruby/istruct.h</span>
-        <span class="ident">MRB_TT_ISTRUCT</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">InlineStruct</span>,
+        <span class="ident">MRB_TT_ISTRUCT</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">InlineStruct</span>,
         <span class="comment">// `MRB_TT_BREAK` is used internally to the mruby VM. BREAK is used as</span>
         <span class="comment">// the return value of `mrb_yield` when the block has a non-local</span>
         <span class="comment">// return.</span>
         <span class="comment">//</span>
         <span class="comment">// FIXME(lopopolo): The below &quot;unreachable&quot; designation is incorrect.</span>
         <span class="comment">// BREAK should be handled by `sys::protect::block_yield`.</span>
-        <span class="ident">MRB_TT_BREAK</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
+        <span class="ident">MRB_TT_BREAK</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
         <span class="comment">// `MRB_TT_MAXDEFINE` is a marker enum value used by the mruby VM to</span>
         <span class="comment">// dynamically check if a type tag is valid using the less than</span>
         <span class="comment">// operator. It does not correspond to an instantiated type.</span>
-        <span class="ident">MRB_TT_MAXDEFINE</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
+        <span class="ident">MRB_TT_MAXDEFINE</span> <span class="op">=&gt;</span> <span class="ident">Ruby</span>::<span class="ident">Unreachable</span>,
     }
 }
 

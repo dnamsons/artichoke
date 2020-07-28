@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `artichoke-backend/src/convert/object.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>object.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../artichoke_backend/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `artichoke-backend/src/convert/object.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>object.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../artichoke_backend/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -285,7 +285,7 @@
     <span class="self">Self</span>: <span class="lifetime">&#39;static</span> <span class="op">+</span> <span class="ident">Sized</span>,
 {
     <span class="doccomment">/// Class or module name of this data type.</span>
-    <span class="kw">fn</span> <span class="ident">ruby_type_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>;
+    <span class="kw">fn</span> <span class="ident">ruby_type_name</span>() <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>;
 
     <span class="doccomment">/// Try to convert a Rust object into a [`Value`].</span>
     <span class="doccomment">///</span>
@@ -300,12 +300,12 @@
         <span class="self">self</span>,
         <span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>,
         <span class="ident">slf</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">sys</span>::<span class="ident">mrb_value</span><span class="op">&gt;</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
+    ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">borrow</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow</span>();
         <span class="kw">let</span> <span class="ident">mrb</span> <span class="op">=</span> <span class="ident">borrow</span>.<span class="ident">mrb</span>;
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">borrow</span>
             .<span class="ident">class_spec</span>::<span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>()
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">NotDefinedError</span>::<span class="ident">class</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>()))<span class="question-mark">?</span>;
+            .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="ident">NotDefinedError</span>::<span class="ident">class</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>()))<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="self">self</span>));
         <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">into_raw</span>(<span class="ident">data</span>);
         <span class="kw">let</span> <span class="ident">obj</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">slf</span>) <span class="op">=</span> <span class="ident">slf</span> {
@@ -316,7 +316,7 @@
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rclass</span> <span class="op">=</span> <span class="ident">spec</span>
                 .<span class="ident">rclass</span>(<span class="ident">mrb</span>)
-                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">NotDefinedError</span>::<span class="ident">class</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>()))<span class="question-mark">?</span>;
+                .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="ident">NotDefinedError</span>::<span class="ident">class</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>()))<span class="question-mark">?</span>;
             <span class="kw">unsafe</span> {
                 <span class="kw">let</span> <span class="ident">alloc</span> <span class="op">=</span> <span class="ident">sys</span>::<span class="ident">mrb_data_object_alloc</span>(
                     <span class="ident">mrb</span>,
@@ -350,9 +350,9 @@
     <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">try_from_ruby</span>(
         <span class="ident">interp</span>: <span class="kw-2">&amp;</span><span class="ident">Artichoke</span>,
         <span class="ident">slf</span>: <span class="kw-2">&amp;</span><span class="ident">Value</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
+    ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;&gt;</span>, <span class="ident">Exception</span><span class="op">&gt;</span> {
         <span class="comment">// Make sure we have a Data otherwise extraction will fail.</span>
-        <span class="kw">if</span> <span class="ident">slf</span>.<span class="ident">ruby_type</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">Ruby</span>::<span class="ident">Data</span> {
+        <span class="kw">if</span> <span class="ident">slf</span>.<span class="ident">ruby_type</span>() <span class="op">!=</span> <span class="ident">Ruby</span>::<span class="ident">Data</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">message</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;uninitialized &quot;</span>);
             <span class="ident">message</span>.<span class="ident">push_str</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>());
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Exception</span>::<span class="ident">from</span>(<span class="ident">TypeError</span>::<span class="ident">new</span>(<span class="ident">interp</span>, <span class="ident">message</span>)));
@@ -361,11 +361,11 @@
         <span class="kw">let</span> <span class="ident">mrb</span> <span class="op">=</span> <span class="ident">borrow</span>.<span class="ident">mrb</span>;
         <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">borrow</span>
             .<span class="ident">class_spec</span>::<span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>()
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">NotDefinedError</span>::<span class="ident">class</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>()))<span class="question-mark">?</span>;
+            .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="ident">NotDefinedError</span>::<span class="ident">class</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>()))<span class="question-mark">?</span>;
         <span class="comment">// Sanity check that the RClass matches.</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rclass</span> <span class="op">=</span> <span class="ident">spec</span>
             .<span class="ident">rclass</span>(<span class="ident">mrb</span>)
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">NotDefinedError</span>::<span class="ident">class</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>()))<span class="question-mark">?</span>;
+            .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="ident">NotDefinedError</span>::<span class="ident">class</span>(<span class="self">Self</span>::<span class="ident">ruby_type_name</span>()))<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="op">!</span><span class="ident">ptr</span>::<span class="ident">eq</span>(
             <span class="ident">sys</span>::<span class="ident">mrb_sys_class_of_value</span>(<span class="ident">mrb</span>, <span class="ident">slf</span>.<span class="ident">inner</span>()),
             <span class="ident">rclass</span>.<span class="ident">as_mut</span>(),
@@ -394,7 +394,7 @@
 <span class="kw">where</span>
     <span class="ident">T</span>: <span class="ident">RustBackedValue</span>,
 {
-    <span class="kw">fn</span> <span class="ident">ruby_type_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
+    <span class="kw">fn</span> <span class="ident">ruby_type_name</span>() <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
         <span class="ident">T</span>::<span class="ident">ruby_type_name</span>()
     }
 }
@@ -413,7 +413,7 @@
     <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">container_value</span>(
         <span class="ident">mrb</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">sys</span>::<span class="ident">mrb_state</span>,
         <span class="ident">slf</span>: <span class="ident">sys</span>::<span class="ident">mrb_value</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">sys</span>::<span class="ident">mrb_value</span> {
+    ) <span class="op">-&gt;</span> <span class="ident">sys</span>::<span class="ident">mrb_value</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">interp</span> <span class="op">=</span> <span class="macro">unwrap_interpreter</span><span class="macro">!</span>(<span class="ident">mrb</span>);
 
         <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">Value</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">interp</span>, <span class="ident">slf</span>);
@@ -426,7 +426,7 @@
     }
 
     <span class="kw">impl</span> <span class="ident">RustBackedValue</span> <span class="kw">for</span> <span class="ident">Container</span> {
-        <span class="kw">fn</span> <span class="ident">ruby_type_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
+        <span class="kw">fn</span> <span class="ident">ruby_type_name</span>() <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
             <span class="string">&quot;Container&quot;</span>
         }
     }
@@ -438,7 +438,7 @@
     }
 
     <span class="kw">impl</span> <span class="ident">RustBackedValue</span> <span class="kw">for</span> <span class="ident">Other</span> {
-        <span class="kw">fn</span> <span class="ident">ruby_type_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
+        <span class="kw">fn</span> <span class="ident">ruby_type_name</span>() <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
             <span class="string">&quot;Other&quot;</span>
         }
     }
@@ -491,7 +491,7 @@
             .<span class="ident">value_is_rust_object</span>()
             .<span class="ident">define</span>()
             .<span class="ident">unwrap</span>();
-        <span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow_mut</span>().<span class="ident">def_class</span>::<span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Other</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">spec</span>);
+        <span class="ident">interp</span>.<span class="number">0</span>.<span class="ident">borrow_mut</span>().<span class="ident">def_class</span>::<span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Other</span><span class="op">&gt;&gt;</span>(<span class="ident">spec</span>);
 
         <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">interp</span>.<span class="ident">convert_mut</span>(<span class="string">&quot;string&quot;</span>);
         <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">value</span>
